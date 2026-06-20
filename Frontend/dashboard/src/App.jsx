@@ -1,7 +1,7 @@
 
 import "./App.css";
 import Careform from "./Pages/Careform";
-import Users from "./Pages/user";
+import Users from "./Pages/User";
 
 import React, { useEffect, useState } from "react";
 
