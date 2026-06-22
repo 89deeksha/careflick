@@ -1,123 +1,93 @@
 import React, { useState } from "react";
+import "./App.css";
 
-function Careform({ users, setSubmittedForms }) {
-  const [formData, setFormData] = useState({
-    userId: "",
-    formType: "",
-    notes: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+function App() {
+  const initialdata = {
+    residentName: "",
+    symptomsObserved: {
+      fever: false,
+      cough: false,
+      fatigue: false,
+      headache: false,
+      shortnessOfBreath: false,
+      diziness: false,
+    },
   };
 
- const handleSubmit = (e) => {
-  e.preventDefault();
+  const [formData, setFormData] = useState(initialdata);
 
-  if (
-    !formData.userId ||
-    !formData.formType ||
-    !formData.notes
-  ) {
-    alert("Please fill all fields");
-    return;
-  }
+  const handleTextChange = (e) => {
+    const { name, value } = e.target;
 
-  const newForm = {
-    id: Date.now(),
-    userId: Number(formData.userId),
-    formType: formData.formType,
-    notes: formData.notes,
-    submittedAt: new Date().toLocaleString(),
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  setSubmittedForms((prev) => [
-    ...prev,
-    newForm,
-  ]);
+  const handleSymptomChange = (e) => {
+    const { name, checked } = e.target;
 
-  alert("Form submitted successfully");
-
-  setFormData({
-    userId: "",
-    formType: "",
-    notes: "",
-  });
-};
+    setFormData((prev) => ({
+      ...prev,
+      symptomsObserved: {
+        ...prev.symptomsObserved,
+        [name]: checked,
+      },
+    }));
+  };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h2 className="text-2xl font-bold mb-4">
-        Care Form
-      </h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-lg bg-white shadow-lg rounded-xl p-6">
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Resident Care Form
+        </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4"
-      >
-        {/* User Dropdown */}
-        <select
-          name="userId"
-          value={formData.userId}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        >
-          <option value="">
-            Select User
-          </option>
+        {/* Resident Name */}
+        <div className="mb-5">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Resident Name
+          </label>
+          <input
+            type="text"
+            name="residentName"
+            value={formData.residentName}
+            onChange={handleTextChange}
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter resident name"
+          />
+        </div>
 
-          {users?.map((user) => (
-            <option
-              key={user.id}
-              value={user.id}
-            >
-              {user.name}
-            </option>
-          ))}
-        </select>
+        {/* Symptoms */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3">
+            Symptoms Observed
+          </h2>
 
-        {/* Form Type */}
-        <select
-          name="formType"
-          value={formData.formType}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        >
-          <option value="">
-            Select Form Type
-          </option>
-
-          <option value="Health Check Form">
-            Health Check Form
-          </option>
-
-          <option value="Medication Form">
-            Medication Form
-          </option>
-        </select>
-
-        {/* Notes */}
-        <textarea
-          name="notes"
-          value={formData.notes}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          placeholder="Enter Notes"
-          rows="4"
-        />
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Submit Form
-        </button>
-      </form>
+          <div className="grid grid-cols-2 gap-3">
+            {Object.keys(formData.symptomsObserved).map((symptom) => (
+              <label
+                key={symptom}
+                className="flex items-center gap-2 text-gray-700"
+              >
+                <input
+                  type="checkbox"
+                  name={symptom}
+                  checked={formData.symptomsObserved[symptom]}
+                  onChange={handleSymptomChange}
+                  className="h-4 w-4"
+                />
+                <span className="capitalize">
+                  {symptom.replace(/([A-Z])/g, " $1")}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default Careform;
+export default App;
